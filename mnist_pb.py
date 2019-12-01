@@ -65,10 +65,13 @@ img_rows = 28
 img_cols = 28
 image_index = 4444
 
-_ = input("Press any key to proceed for  Inferencing/Predictions ... !")
+#_ = input("Press any key to proceed for  Inferencing/Predictions ... !")
+print("\n\nProceeding for Inference on MNIST Dataset ... !")
+
 true_pred = 0
 false_pred = 0
 
+start_time = time.time()
 for image in range(0, len(x_test)):
     pred_npy = model.predict(x_test[image].reshape(1, img_rows, img_cols, 1))
     pred = pred_npy.argmax()
@@ -79,9 +82,13 @@ for image in range(0, len(x_test)):
         true_pred += 1
     if pred != y_test[image]:
         false_pred += 1
+end_time = time.time()
 
 print("Total True Predictions on Test Dataset: ", true_pred)
 print("Total False Predictions on Test Dataset: ", false_pred)
+    
+print("Inferencing Time: 10,000 test images (secs): ", end_time - start_time)
+print("Inferencing Time: Images processed / sec: ", 10000/(end_time - start_time))
 
 #print("Prediction for Input Image: ", y_test[image_index])
 #print("Numpy Prediction Output for the Input Sample: ", pred)
