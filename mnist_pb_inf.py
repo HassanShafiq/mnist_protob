@@ -13,6 +13,9 @@ print('Testing Set Shape: ', y_test.shape)
 
 print('Taining Set Shape: ', x_train.shape)
 
+# ----------------------------------------- I M P O R T A N T -----------------------------------------
+# Loading Tensorflow Protocol Buffers .pb File from Disk into GPU Memory:
+print("ALERT: Loading Tensorflow Protocol Buffers .pb File from the Disk !")
 wkdir = './proto_files'
 pb_filename = 'mnist_proto.pb'
 
@@ -55,10 +58,19 @@ with tf.Session() as sess:
     # Inferencing over MNIST Dataset (Testset) using Protocol Buffers .pb Model file:
     
     # _ = input("Press any key to proceed for  Inferencing/Predictions ... !")
-    print("\n\nProceeding for Inference on MNIST Dataset ... !")
+    print("\n\nALERT: Proceeding for Inference on MNIST Dataset (Test Set) ... !")
     start_time = time.time()
     true_pred = 0
     false_pred = 0
+    
+    # Reshaping Datasets:
+    # Test Dataset:
+    #for image in range(0, len(x_test)):
+    #    x_test[image] = x_test[image].reshape(-1, img_rows, img_cols, 1)
+    
+    # Train Dataset:
+    #for image in range(0, len(x_train)):
+    #    x_train[image] = x_train[image].reshape(-1, img_rows, img_cols, 1)
 
     for image in range(0, len(x_test)):
         #pred_npy = model.predict(x_test[image].reshape(1, img_rows, img_cols, 1))
@@ -79,3 +91,28 @@ with tf.Session() as sess:
     
     print("Inferencing Time: 10,000 test images (secs): ", end_time - start_time)
     print("Inferencing Time: Images processed / sec: ", 10000/(end_time - start_time))
+    
+    print("\n\nProceeding for Inference on MNIST Dataset (Training Set)... !")
+    start_time = time.time()
+    true_pred = 0
+    false_pred = 0
+        
+    for image in range(0, len(x_train)):
+        #pred_npy = model.predict(x_test[image].reshape(1, img_rows, img_cols, 1))
+        #pred = pred_npy.argmax()
+        
+        prediction = (sess.run(tensor_output, {tensor_input: x_train[image].reshape(-1, img_rows, img_cols, 1)})).argmax()
+        #print('Prediction: ', prediction)
+        #print("Orinal Image: ", y_test[image])
+        #print("Predicted: ", pred)
+        if prediction == y_train[image]:
+            true_pred += 1
+        if prediction != y_train[image]:
+            false_pred += 1
+
+    print("Total True Predictions on Test Dataset: ", true_pred)
+    print("Total False Predictions on Test Dataset: ", false_pred)
+    end_time = time.time()
+    
+    print("Inferencing Time: 60,000 test images (secs): ", end_time - start_time)
+    print("Inferencing Time: Images processed / sec: ", 60000/(end_time - start_time))
